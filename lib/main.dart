@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() {
   runApp(const MaterialApp(
@@ -21,28 +22,32 @@ class _YosemiteSliderState extends State<YosemiteSlider> {
 
   final List<Map<String, String>> items = [
     {
-      'image': 'assets/one.png',
-      'title': 'Yosemite National Park',
+      'image':
+          'https://raw.githubusercontent.com/Azul-Torres-1108/myapp/main/assets/one.png',
+      'title': 'Symphony of Nature',
       'description':
-          'Yosemite is famous for its giant, ancient sequoia trees and Tunnel View with Bridalveil Fall.',
+          'Witness the grand canvas where ancient sequoias whisper timeless tales, and waterfalls sing melodies of serenity.',
     },
     {
-      'image': 'assets/two.png',
-      'title': 'El Capitan',
+      'image':
+          'https://raw.githubusercontent.com/Azul-Torres-1108/myapp/main/assets/two.png',
+      'title': 'The Sculpted Giant',
       'description':
-          'El Capitan is a vertical rock formation in Yosemite, attracting climbers worldwide.',
+          'El Capitan stands as nature’s masterpiece — a towering monument carved by patience and time, inspiring every soul who gazes upon it.',
     },
     {
-      'image': 'assets/tree.png',
-      'title': 'Half Dome',
+      'image':
+          'https://raw.githubusercontent.com/Azul-Torres-1108/myapp/main/assets/tree.png',
+      'title': 'Granite Poetry',
       'description':
-          'Half Dome is a granite dome, one of the park’s most recognized features.',
+          'Half Dome rises like a sonnet in stone, its curves and edges narrating stories of resilience and silent strength.',
     },
     {
-      'image': 'assets/for.png',
-      'title': 'Half Dome',
+      'image':
+          'https://raw.githubusercontent.com/Azul-Torres-1108/myapp/main/assets/for.png',
+      'title': 'Eternal Horizon',
       'description':
-          'Half Dome is a granite dome, one of the park’s most recognized features.',
+          'The horizon blends earth and sky in a timeless dance, where every ray of light paints a new chapter in nature’s endless art.',
     },
   ];
 
@@ -51,7 +56,6 @@ class _YosemiteSliderState extends State<YosemiteSlider> {
     return Scaffold(
       body: Stack(
         children: [
-          // Página deslizable con la interacción
           PageView.builder(
             controller: _pageController,
             onPageChanged: (index) {
@@ -65,33 +69,45 @@ class _YosemiteSliderState extends State<YosemiteSlider> {
               return Stack(
                 fit: StackFit.expand,
                 children: [
-                  // Mostrar la imagen
-                  Image(image: AssetImage(item['image']!), fit: BoxFit.cover),
-                  // Filtro de gradiente para el texto
+                  Image.network(
+                    item['image']!,
+                    fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return const Center(child: CircularProgressIndicator());
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Center(
+                          child: Icon(Icons.error, color: Colors.red, size: 50));
+                    },
+                  ),
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withOpacity(0.8)
+                        ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                       ),
                     ),
                   ),
                   AnimatedPositioned(
-                    duration: Duration(milliseconds: 700),
+                    duration: const Duration(milliseconds: 700),
                     curve: Curves.easeOut,
                     bottom: active ? 80 : 40,
                     left: 20,
                     right: 20,
                     child: AnimatedOpacity(
-                      duration: Duration(milliseconds: 700),
+                      duration: const Duration(milliseconds: 700),
                       opacity: active ? 1.0 : 0.0,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             item['title']!,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -100,18 +116,28 @@ class _YosemiteSliderState extends State<YosemiteSlider> {
                           const SizedBox(height: 8),
                           Row(
                             children: List.generate(5, (index) {
-                              return const Icon(Icons.star, color: Colors.amber, size: 16);
+                              return const FaIcon(
+                                FontAwesomeIcons.solidStar,
+                                color: Colors.amber,
+                                size: 16,
+                              );
                             }),
                           ),
                           const SizedBox(height: 10),
                           Text(
                             item['description']!,
-                            style: TextStyle(fontSize: 16, color: Colors.white70),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.white70,
+                            ),
                           ),
                           const SizedBox(height: 10),
                           TextButton(
                             onPressed: () {},
-                            child: const Text('READ MORE', style: TextStyle(color: Colors.white)),
+                            child: const Text(
+                              'READ MORE',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           )
                         ],
                       ),
@@ -121,23 +147,21 @@ class _YosemiteSliderState extends State<YosemiteSlider> {
               );
             },
           ),
-          // Indicador de página
           Positioned(
             top: 50,
             right: 20,
             child: Text(
               '${_currentPage + 1}/${items.length}',
-              style: TextStyle(color: Colors.white, fontSize: 16),
+              style: const TextStyle(color: Colors.white, fontSize: 16),
             ),
           ),
-          // Control del SmoothPageIndicator
           Positioned(
             bottom: 20,
             left: 20,
             child: SmoothPageIndicator(
               controller: _pageController,
               count: items.length,
-              effect: WormEffect(
+              effect: const WormEffect(
                 dotColor: Colors.white38,
                 activeDotColor: Colors.white,
                 dotHeight: 8,
